@@ -232,11 +232,11 @@ extern NSInteger bottomThermal;
             
         }
     } else if (sender == typeSC) {
-        if (unitSC.selectedSegmentIndex == 0) {
+        if (typeSC.selectedSegmentIndex == 0) {
             
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"casual"];
             
-        } else if (unitSC.selectedSegmentIndex == 1) {
+        } else if (typeSC.selectedSegmentIndex == 1) {
             
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"casual"];
             
