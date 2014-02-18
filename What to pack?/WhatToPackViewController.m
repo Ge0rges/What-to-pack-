@@ -24,11 +24,10 @@ NSInteger dressShirts;
 NSInteger sweaters;
 NSInteger blazers;
 NSInteger slacks;
-NSInteger womenPants;
+NSInteger pants;
 NSInteger skirts;
 NSInteger dresses;
 NSInteger suits;
-NSInteger womenSuits;
 NSInteger tuxedo;
 NSInteger ties;
 
@@ -76,7 +75,7 @@ NSInteger bottomThermal;
 
 @implementation WhatToPackViewController
 
-@synthesize mainTableView, underwearCell, undershirtCell, socksCell, brasCell, sleepwearCell, tightsCell;
+@synthesize mainTableView, underwearCell, undershirtCell, socksCell, brasCell, sleepwearCell, tightsCell, dressShirtsCell, sweatersCell,blazersCell,slacksCell,pantsCell,skirtsCell,dressesCell,suitsCell,tuxedoCell,tiesCell;
 
 - (void)viewDidLoad
 {
@@ -95,6 +94,19 @@ NSInteger bottomThermal;
     brasCell.textLabel.text = [NSString stringWithFormat:@"%i",bras];
     sleepwearCell.textLabel.text = [NSString stringWithFormat:@"%i",sleepwear];
     tightsCell.textLabel.text = [NSString stringWithFormat:@"%i",tights];
+    
+    //section 2
+    dressShirtsCell.textLabel.text = [NSString stringWithFormat:@"%i",dressShirts];
+    sweatersCell.textLabel.text = [NSString stringWithFormat:@"%i",sweaters];
+    blazersCell.textLabel.text = [NSString stringWithFormat:@"%i",blazers];
+    slacksCell.textLabel.text = [NSString stringWithFormat:@"%i",slacks];
+    pantsCell.textLabel.text = [NSString stringWithFormat:@"%i",pants];
+    skirtsCell.textLabel.text = [NSString stringWithFormat:@"%i",skirts];
+    dressesCell.textLabel.text = [NSString stringWithFormat:@"%i",dresses];
+    suitsCell.textLabel.text = [NSString stringWithFormat:@"%i",suits];
+    tuxedoCell.textLabel.text = [NSString stringWithFormat:@"%i",tuxedo];
+    tiesCell.textLabel.text = [NSString stringWithFormat:@"%i",ties];
+
 
     //reloadData
     [mainTableView reloadData];

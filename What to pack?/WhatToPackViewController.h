@@ -19,5 +19,15 @@
 @property (strong, nonatomic) IBOutlet UITableViewCell *brasCell;
 @property (strong, nonatomic) IBOutlet UITableViewCell *sleepwearCell;
 @property (strong, nonatomic) IBOutlet UITableViewCell *tightsCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *dressShirtsCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *sweatersCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *blazersCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *slacksCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *pantsCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *skirtsCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *dressesCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *suitsCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *tuxedoCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *tiesCell;
 
 @end

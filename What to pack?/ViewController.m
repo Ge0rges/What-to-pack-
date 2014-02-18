@@ -26,11 +26,10 @@ extern NSInteger dressShirts;
 extern NSInteger sweaters;
 extern NSInteger blazers;
 extern NSInteger slacks;
-extern NSInteger womenPants;
+extern NSInteger pants;
 extern NSInteger skirts;
 extern NSInteger dresses;
 extern NSInteger suits;
-extern NSInteger womenSuits;
 extern NSInteger tuxedo;
 extern NSInteger ties;
 
@@ -84,6 +83,52 @@ extern NSInteger bottomThermal;
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 
+    //reset all variables
+     underwear = 0;
+     socks = 0;
+     undershirt = 0;
+     bras = 0;
+     sleepwear = 0;
+     tights = 0;
+     dressShirts = 0;
+     sweaters = 0;
+     blazers = 0;
+     slacks = 0;
+     pants = 0;
+     skirts = 0;
+     dresses = 0;
+     suits = 0;
+     tuxedo = 0;
+     ties = 0;
+     jackets = 0;
+     coats = 0;
+     raincoats = 0;
+     hats = 0;
+     gloves = 0;
+     scarves = 0;
+     t_shirt = 0;
+     tankTops = 0;
+     sweatshirts = 0;
+     jeans = 0;
+     shorts = 0;
+     exercise_clothing = 0;
+     swimsuit = 0;
+     athleticShoes = 0;
+     leisureShoes = 0;
+     dressShoes = 0;
+     sandals__flip_flops = 0;
+     boots = 0;
+     belt = 0;
+     wristwatch = 0;
+     jewelry = 0;
+     glasses = 0;
+     sunglasses = 0;
+     reading_glasses = 0;
+     glasses_cases = 0;
+     umbrella = 0;
+     topThermal = 0;
+     bottomThermal = 0;
+    
     //set activity indicator
     [activityIndicator stopAnimating];
     
@@ -197,11 +242,11 @@ extern NSInteger bottomThermal;
             
         }
     } else if (sender == sexeSC) {
-        if (unitSC.selectedSegmentIndex == 0) {
+        if (sexeSC.selectedSegmentIndex == 0) {
             
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"female"];
             
-        } else if (unitSC.selectedSegmentIndex == 1) {
+        } else if (sexeSC.selectedSegmentIndex == 1) {
             
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"female"];
             
@@ -337,8 +382,10 @@ extern NSInteger bottomThermal;
 
 - (void)whatToPack{
     
-    for (int i=(int)forecast.count; i<=forecast.count; i++) {
-        NSDictionary *forecastData = [forecast objectAtIndex:i-1];
+    for (int i=0; i<forecast.count; i++) {
+        
+        NSDictionary *forecastData = [forecast objectAtIndex:i];
+        
 
         NSString *weather = forecastData[@"weather"][0][@"main"];
 
@@ -351,6 +398,7 @@ extern NSInteger bottomThermal;
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
             
             bras ++;
+            NSLog(@"bras ++");
             tights ++;
         }
         
@@ -427,6 +475,7 @@ extern NSInteger bottomThermal;
                         slacks ++;
                         blazers ++;
                         suits ++;
+                        pants ++;
                         
                     } else {
 
@@ -447,9 +496,9 @@ extern NSInteger bottomThermal;
                         wristwatch ++;
                         jewelry ++;
                         dressShirts ++;
-                        womenPants ++;
+                        pants ++;
                         skirts ++;
-                        womenSuits ++;
+                        suits ++;
                     }
                 }
             } else if ([weather isEqualToString:@"Snow"] || [weather isEqualToString:@"Rain"]) {
@@ -512,6 +561,7 @@ extern NSInteger bottomThermal;
                         suits ++;
                         raincoats ++;
                         umbrella ++;
+                        pants ++;
                         
                     } else {
                         
@@ -529,9 +579,9 @@ extern NSInteger bottomThermal;
                         wristwatch ++;
                         jewelry ++;
                         dressShirts ++;
-                        womenPants ++;
+                        pants ++;
                         skirts ++;
-                        womenSuits ++;
+                        suits ++;
                         raincoats ++;
                         umbrella ++;
                     }
@@ -606,6 +656,7 @@ extern NSInteger bottomThermal;
                         slacks ++;
                         blazers ++;
                         suits ++;
+                        pants ++;
                         
                     } else {
                         
@@ -626,9 +677,9 @@ extern NSInteger bottomThermal;
                         wristwatch ++;
                         jewelry ++;
                         dressShirts ++;
-                        womenPants ++;
+                        pants ++;
                         skirts ++;
-                        womenSuits ++;
+                        suits ++;
                     }
                 }
             } else if ([weather isEqualToString:@"Snow"] || [weather isEqualToString:@"Rain"]) {
@@ -691,6 +742,7 @@ extern NSInteger bottomThermal;
                         suits ++;
                         raincoats ++;
                         umbrella ++;
+                        pants ++;
                         
                     } else {
                         
@@ -708,9 +760,9 @@ extern NSInteger bottomThermal;
                         wristwatch ++;
                         jewelry ++;
                         dressShirts ++;
-                        womenPants ++;
+                        pants ++;
                         skirts ++;
-                        womenSuits ++;
+                        suits ++;
                         raincoats ++;
                         umbrella ++;
                     }
@@ -779,6 +831,7 @@ extern NSInteger bottomThermal;
                         slacks ++;
                         blazers ++;
                         suits ++;
+                        pants ++;
                         
                     } else {
                         
@@ -797,9 +850,9 @@ extern NSInteger bottomThermal;
                         wristwatch ++;
                         jewelry ++;
                         dressShirts ++;
-                        womenPants ++;
+                        pants ++;
                         skirts ++;
-                        womenSuits ++;
+                        suits ++;
                     }
                 }
             } else if ([weather isEqualToString:@"Snow"] || [weather isEqualToString:@"Rain"]) {
@@ -856,6 +909,7 @@ extern NSInteger bottomThermal;
                         suits ++;
                         raincoats ++;
                         umbrella ++;
+                        pants ++;
                         
                     } else {
                         
@@ -871,9 +925,9 @@ extern NSInteger bottomThermal;
                         wristwatch ++;
                         jewelry ++;
                         dressShirts ++;
-                        womenPants ++;
+                        pants ++;
                         skirts ++;
-                        womenSuits ++;
+                        suits ++;
                         raincoats ++;
                         umbrella ++;
                     }
@@ -923,8 +977,8 @@ extern NSInteger bottomThermal;
         if (slacks > 3) {
             slacks = 3;
         }
-        if (womenPants > 3) {
-            womenPants = 3;
+        if (pants > 3) {
+            pants = 3;
         }
         if (skirts > 3) {
             skirts = 3;
@@ -932,8 +986,8 @@ extern NSInteger bottomThermal;
         if (dresses > 3) {
             dresses = 3;
         }
-        if (womenSuits > 3) {
-            womenSuits = 3;
+        if (suits > 3) {
+            suits = 3;
         }
         if (tuxedo > 3) {
             tuxedo = 3;
