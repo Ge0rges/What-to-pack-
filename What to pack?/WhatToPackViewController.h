@@ -29,5 +29,11 @@
 @property (strong, nonatomic) IBOutlet UITableViewCell *suitsCell;
 @property (strong, nonatomic) IBOutlet UITableViewCell *tuxedoCell;
 @property (strong, nonatomic) IBOutlet UITableViewCell *tiesCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *jacketsCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *coatsCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *rainCoatsCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *hatsCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *glovesCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *scarvesCell;
 
 @end
