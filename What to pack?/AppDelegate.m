@@ -15,18 +15,15 @@
     // Override point for customization after application launch.
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-    
-    //make the segmented control apply global tint!
-    [[UISegmentedControl appearance] setTintColor:[UIColor colorWithRed:212/255.0 green:146/255.0 blue:55/255.0 alpha:1.0]];
-    
+      
     //set default values
-    if([[NSUserDefaults standardUserDefaults] boolForKey:@"launchBool"]) {
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"launchBool"]) {
         
         [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"unit"];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"casual"];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"female"];
 
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"launchBool"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"launchBool"];
     }
 
     return YES;

@@ -12,23 +12,27 @@
 #import "WhatToPackViewController.h"
 
 @interface ViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource> {
+    NSArray *clothes;
     
     OWMWeatherAPI *weatherAPI;
     
-    NSArray *forecast;
-    NSDateFormatter *dateFormatter;
+    NSMutableArray *forecast;
     
-    float temp;
+    NSDateFormatter *dateFormatter;
 }
 
 @property (strong, nonatomic) IBOutlet UIButton *goButton;
-@property (strong, nonatomic) IBOutlet UISegmentedControl *unitSC;
-@property (strong, nonatomic) IBOutlet UITextField *destinationTF;
+@property (strong, nonatomic) IBOutlet UIButton *whatToPackBTN;
+
 @property (weak, nonatomic) IBOutlet UITableView *forecastTableView;
+
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+
 @property (strong, nonatomic) IBOutlet UITextField *timeTF;
+@property (strong, nonatomic) IBOutlet UITextField *destinationTF;
+
+@property (strong, nonatomic) IBOutlet UISegmentedControl *unitSC;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *typeSC;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *sexeSC;
-@property (strong, nonatomic) IBOutlet UIButton *whatToPackBTN;
 
 @end

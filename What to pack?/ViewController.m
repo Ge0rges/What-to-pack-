@@ -8,67 +8,7 @@
 
 #import "ViewController.h"
 
-#define systemSoundID    1028
-
-extern NSInteger forecast_count;
-
-//clothes (extern variables so we can use them to populate tableView in WhatToPackViewController)
-//Basics (max value 7)
-extern NSInteger underwear;
-extern NSInteger socks;
-extern NSInteger undershirt;
-extern NSInteger bras;
-extern NSInteger sleepwear;
-extern NSInteger tights;
-
-//dressy (max value 3)
-extern NSInteger dressShirts;
-extern NSInteger sweaters;
-extern NSInteger blazers;
-extern NSInteger slacks;
-extern NSInteger pants;
-extern NSInteger skirts;
-extern NSInteger dresses;
-extern NSInteger suits;
-extern NSInteger tuxedo;
-extern NSInteger ties;
-
-//outerwear (max value 2)
-extern NSInteger jackets;
-extern NSInteger coats;
-extern NSInteger raincoats;
-extern NSInteger hats;
-extern NSInteger gloves;
-extern NSInteger scarves;
-
-//casual (max value 5)
-extern NSInteger t_shirt;
-extern NSInteger tankTops;
-extern NSInteger sweatshirts;
-extern NSInteger jeans;
-extern NSInteger shorts;
-extern NSInteger exercise_clothing;
-extern NSInteger swimsuit;
-
-//footwear (max value 2)
-extern NSInteger athleticShoes;
-extern NSInteger leisureShoes;
-extern NSInteger dressShoes;
-extern NSInteger sandals__flip_flops;
-extern NSInteger boots;
-
-//accesories (max value 2)
-extern NSInteger belt;
-extern NSInteger wristwatch;
-extern NSInteger jewelry;
-extern NSInteger glasses;
-extern NSInteger sunglasses;
-extern NSInteger reading_glasses;
-extern NSInteger glasses_cases;
-extern NSInteger umbrella;
-//thermals (max value 2)
-extern NSInteger topThermal;
-extern NSInteger bottomThermal;
+extern NSInteger forecastCount;
 
 @interface ViewController ()
 
@@ -78,67 +18,43 @@ extern NSInteger bottomThermal;
 
 @synthesize unitSC, destinationTF, activityIndicator, timeTF, goButton, sexeSC, typeSC, whatToPackBTN;
 
+#pragma mark - View Lifecycle
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    // Do any additional setup after loading the view, typically from a nib.
+    
+    //update status bar
+    [self setNeedsStatusBarAppearanceUpdate];
+    
+    // Setup weather api
+    weatherAPI = [[OWeatherMapAPI alloc] initWithAPIKey:@"49dfbf0711418f5cd182e3b0cc4641ee"];
+    
+    // We want localized strings according to the prefered system language
+    [weatherAPI setLangWithPreferedLanguage];
+    
+}
 
-    //reset all variables
-     underwear = 0;
-     socks = 0;
-     undershirt = 0;
-     bras = 0;
-     sleepwear = 0;
-     tights = 0;
-     dressShirts = 0;
-     sweaters = 0;
-     blazers = 0;
-     slacks = 0;
-     pants = 0;
-     skirts = 0;
-     dresses = 0;
-     suits = 0;
-     tuxedo = 0;
-     ties = 0;
-     jackets = 0;
-     coats = 0;
-     raincoats = 0;
-     hats = 0;
-     gloves = 0;
-     scarves = 0;
-     t_shirt = 0;
-     tankTops = 0;
-     sweatshirts = 0;
-     jeans = 0;
-     shorts = 0;
-     exercise_clothing = 0;
-     swimsuit = 0;
-     athleticShoes = 0;
-     leisureShoes = 0;
-     dressShoes = 0;
-     sandals__flip_flops = 0;
-     boots = 0;
-     belt = 0;
-     wristwatch = 0;
-     jewelry = 0;
-     glasses = 0;
-     sunglasses = 0;
-     reading_glasses = 0;
-     glasses_cases = 0;
-     umbrella = 0;
-     topThermal = 0;
-     bottomThermal = 0;
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    //get clothes data
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{clothes = [self getClothingData];});
     
     //set activity indicator
     [activityIndicator stopAnimating];
+    activityIndicator.alpha = 0.0;
     
-    //no data yet!
+    //prepare view for no data
     //goButton
     goButton.hidden = YES;
-    [NSTimer scheduledTimerWithTimeInterval:1.0/60 target:self selector:@selector(hideGoButton) userInfo:nil repeats:YES];
+    goButton.alpha = 0.0;
+    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(checkHideGoButton) userInfo:nil repeats:YES];
     
     //what to pack hutton
     whatToPackBTN.hidden = YES;
+    whatToPackBTN.alpha = 0.0;
     
     //setup date format and init forecast array
     NSString *dateComponents = @"MMMddyyyy H:m";
@@ -146,74 +62,53 @@ extern NSInteger bottomThermal;
     dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:dateFormat];
     
-    forecast = @[];
-    
-    
-    // Setup weather api
-    weatherAPI = [[OWMWeatherAPI alloc] initWithAPIKey:@"49dfbf0711418f5cd182e3b0cc4641ee"];
-    
-    // We want localized strings according to the prefered system language
-    [weatherAPI setLangWithPreferedLanguage];
+    forecast = [NSMutableArray new];
     
     //setup unitsSC
     int unit = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"unit"];
+    
     if (unit == 1) {
-        
         unitSC.selectedSegmentIndex = 0;
         [weatherAPI setTemperatureFormat:kOWMTempCelcius];
-
-    
-    } else if (unit == 2) {
         
+    } else if (unit == 2) {
         unitSC.selectedSegmentIndex = 1;
         [weatherAPI setTemperatureFormat:kOWMTempFahrenheit];
-
-    
+        
     } else if (unit == 3) {
-       
+        
         unitSC.selectedSegmentIndex = 2;
         [weatherAPI setTemperatureFormat:kOWMTempKelvin];
-        
     }
     
     BOOL type = [[NSUserDefaults standardUserDefaults] boolForKey:@"casual"];
     if (type == YES) {
-        
         typeSC.selectedSegmentIndex = 0;
-        
-        
     } else if (type == NO) {
-        
         typeSC.selectedSegmentIndex = 1;
-        
     }
     
     BOOL sexe = [[NSUserDefaults standardUserDefaults] boolForKey:@"female"];
     if (sexe == NO) {
-        
         sexeSC.selectedSegmentIndex = 0;
-        
-        
     } else if (sexe == YES) {
-        
         sexeSC.selectedSegmentIndex = 1;
-        
     }
 }
 
--(void)viewDidAppear:(BOOL)animated {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstTimeMainView"]) {
-        //how to use app
-        [[[UIAlertView alloc] initWithTitle:@"What to pack? Tutorial" message:@"This is the main window, here you configure various settings like if you are packing for a man or women, is this a formal occasion like a wedding and what's your favorite unit for temperature. Then you enter your destination and how many days you will be traveling and press Go! We will automaticaly get a forecast for you and so you can look at that while we generate what you have to pack. Once we're doen doing that Just click the What to Pack? button that appeared on the bottom of the screen along with that 'ping' sound!" delegate:nil cancelButtonTitle:@"Awesome!" otherButtonTitles:nil, nil] show];
-        
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstTimeMainView"];
-    }
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+-(UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleDefault;
 }
 
 #pragma mark - controls, buttons
 
 - (IBAction)segmentedControls:(id)sender {
-    
     if (sender ==  unitSC) {
         if (unitSC.selectedSegmentIndex == 0) {
             
@@ -224,7 +119,7 @@ extern NSInteger bottomThermal;
             
             [weatherAPI setTemperatureFormat:kOWMTempFahrenheit];
             [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:@"unit"];
-        
+            
         }else if (unitSC.selectedSegmentIndex == 2) {
             
             [weatherAPI setTemperatureFormat:kOWMTempKelvin];
@@ -256,27 +151,44 @@ extern NSInteger bottomThermal;
 
 - (IBAction)getCityNameAndLaunchForecast:(id)sender {
     
-    int value = [timeTF.text intValue];
+    if (!clothes) {
+        clothes = [self getClothingData];
+        if (!clothes) {
+            return;
+        }
+    }
     
-    [self getWeatherWithDestination:destinationTF.text andTime:value];
+    //clear the amounts of clothes
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        for (NSArray *clotheItem in clothes) {//for each clothing items in clothes list
+            //get the properties
+            NSString *name = [clotheItem objectAtIndex:NAME_STRING_INDEX_CLOTHES_ARRAY];
+            [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:name];
+        }
+    });
+
+    int time = [timeTF.text intValue];
+    
+    [self getWeatherWithDestination:destinationTF.text andTime:time+1];
     
     [activityIndicator startAnimating];
-    activityIndicator.hidden = NO;
-    goButton.hidden = YES;
+    [UIView animateWithDuration:0.3 animations:^{goButton.alpha = 0.0;} completion:^(BOOL finished) {
+        goButton.hidden = YES;
+        activityIndicator.hidden = NO;
+        [UIView animateWithDuration:0.3 animations:^{activityIndicator.alpha = 1.0;}];
+    }];
     
     [destinationTF resignFirstResponder];
     [timeTF resignFirstResponder];
-
+    
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     if (textField == destinationTF) {
         
-        if (timeTF.text.length >0) {
-        
+        if (timeTF.text.length > 0) {
             [self getCityNameAndLaunchForecast:nil];
-        
         }
     }
     
@@ -286,21 +198,18 @@ extern NSInteger bottomThermal;
     return YES;
 }
 
-- (void)hideGoButton{
+- (void)checkHideGoButton{
     
-    if (activityIndicator.isAnimating == YES) {
-        
-        goButton.hidden = YES;
+    //check if we should hide the go button depending on text entered
+    if (activityIndicator.isAnimating == YES || activityIndicator.hidden == NO) {
+        [UIView animateWithDuration:0.3 animations:^{goButton.alpha = 0.0;} completion:^(BOOL finished) {goButton.hidden = YES;}];
         
     } else {
-    
-        if (destinationTF.text.length >0 && timeTF.text.length >0) {
-        
+        if (destinationTF.text.length > 0 && timeTF.text.length > 0) {
             goButton.hidden = NO;
-    
+            [UIView animateWithDuration:0.3 animations:^{goButton.alpha = 1.0;}];
         } else {
-        
-            goButton.hidden = YES;
+            [UIView animateWithDuration:0.3 animations:^{goButton.alpha = 0.0;} completion:^(BOOL finished) {goButton.hidden = YES;}];
         }
     }
 }
@@ -308,40 +217,44 @@ extern NSInteger bottomThermal;
 #pragma mark - weather
 - (void)getWeatherWithDestination:(NSString *)destination andTime:(int)time {
     
-    if (time > 14) {
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Forecast" message:@"We are only able to get the weather forecast for 14 days and less today is included in those 14 days, so we are loading 14 days of forecast for you!" delegate:Nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+    if (time > 16) {//make sure it is possible to get a  forecast for those days
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Forecast" message:@"We are only able to get the weather forecast for 14 days excluding today. We are generating a packing list for 14 days." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
         
         timeTF.text = @"14";
-        
+        time = 16;
         [alert show];
-
     }
     
-    [weatherAPI dailyForecastWeatherByCityName:destination withCount:time andCallback:^(NSError *error, NSDictionary *result) {
+    [weatherAPI dailyForecastWeatherByCityName:[destination stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] withCount:time andCallback:^(NSError *error, NSDictionary *result) {
         if (error) {
-
-            [activityIndicator stopAnimating];
-            goButton.hidden = NO;
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Please verify you have an internet connection and that the city name is spelled correclty with no spaces." delegate:Nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Please verify you have an internet connection and that the city name is spelled correctly." delegate:Nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
             [alert show];
-        
-        } else {
-        
-            // The data is ready
-            forecast = result[@"list"];
-            forecast_count = (NSInteger)forecast.count;
-            temp = [result[@"temp"][@"day"]integerValue];
-
-            [self.forecastTableView reloadData];
             
-            [self whatToPack];
+        } else {
+            
+            // The data is ready
+            NSArray *forecastArray = [result objectForKey:@"list"];//get the result into a array
+            [forecast removeAllObjects];//make sure the forecast mutable array is empty
+            [forecast addObjectsFromArray:forecastArray];//populate the mutable array from the forecastArray
+            [forecast removeObjectAtIndex:0];//delete the forecast for today
+            forecastCount = (NSInteger)forecast.count;
+            
+            [self.forecastTableView reloadData];//reload the tableView
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{//create a background thread to generate what to pack
+                [self whatToPack];//generate what to pack
+            });
         }
+    }];
+    
+    [UIView animateWithDuration:0.3 animations:^{activityIndicator.alpha = 0.0;} completion:^(BOOL finished) {
+        goButton.hidden = NO;
+        [UIView animateWithDuration:0.3 animations:^{goButton.alpha = 1.0;} completion:^(BOOL finished) {[activityIndicator stopAnimating];}];
     }];
 }
 
-#pragma mark - forecast tableview datasource
+#pragma mark - UITableViewDataSource & UITableViewDelegate
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return forecast.count;
@@ -358,738 +271,149 @@ extern NSInteger bottomThermal;
     
     int unit = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"unit"];
     if (unit == 1) {
-        
-        cell.textLabel.text = [NSString stringWithFormat:@"%.1f°C - %@", [forecastData[@"temp"][@"day"]floatValue], forecastData[@"weather"][0][@"main"]];
-        
+        cell.textLabel.text = [NSString stringWithFormat:@"%i°C - %@", [forecastData[@"temp"][@"day"] intValue], forecastData[@"weather"][0][@"main"]];
         
     } else if (unit == 2) {
-
-        cell.textLabel.text = [NSString stringWithFormat:@"%.1f°F - %@", [forecastData[@"temp"][@"day"]floatValue] , forecastData[@"weather"][0][@"main"]];
-    
-    } else if (unit == 3) {
+        cell.textLabel.text = [NSString stringWithFormat:@"%i°F - %@", [forecastData[@"temp"][@"day"] intValue] , forecastData[@"weather"][0][@"main"]];
         
-        cell.textLabel.text = [NSString stringWithFormat:@"%.1f°K - %@", [forecastData[@"temp"][@"day"]floatValue], forecastData[@"weather"][0][@"main"]];
+    } else if (unit == 3) {
+        cell.textLabel.text = [NSString stringWithFormat:@"%i°K - %@", [forecastData[@"temp"][@"day"] intValue], forecastData[@"weather"][0][@"main"]];
     }
-
+    
     
     cell.detailTextLabel.text = [dateFormatter stringFromDate:forecastData[@"dt"]];
     
-    [activityIndicator stopAnimating];
-    goButton.hidden = NO;
+    [UIView animateWithDuration:0.3 animations:^{activityIndicator.alpha = 0.0;} completion:^(BOOL finished) {
+        [activityIndicator stopAnimating];
+        goButton.hidden = NO;
+        [UIView animateWithDuration:0.3 animations:^{goButton.alpha = 1.0;}];
+    }];
     
     return cell;
 }
 
-- (void)whatToPack{
+#pragma mark - What To Pack
+- (void)whatToPack {
+    //get the clothes
+    NSMutableSet *namesOfClothesToPack = [NSMutableSet set];
     
-    for (int i=0; i<forecast.count; i++) {
-        
-        NSDictionary *forecastData = [forecast objectAtIndex:i];
-        
-
-        NSString *weather = forecastData[@"weather"][0][@"main"];
-
-        //basic
-        underwear ++;
-        socks ++;
-        undershirt ++;
-        sleepwear ++;
-        
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
+    for (int i = 0; i < forecastCount; i++) {//for each vacation day
+        for (NSArray *clotheItem in clothes) {//for each clothing items in clothes list
             
-            bras ++;
-            NSLog(@"bras ++");
-            tights ++;
-        }
-        
-        //convert the temperature into °C for if statements
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:@"unit"] == 2) {
-            temp = (temp  -  32)/1.8;
+            //get the properties
+            NSString *name = [clotheItem objectAtIndex:NAME_STRING_INDEX_CLOTHES_ARRAY];
+            NSString *gender = [clotheItem objectAtIndex:GENDER_STRING_INDEX_CLOTHES_ARRAY];
+            int minimumTemperature = -400, maximumTemperature = 400;//if we don't have  a range then it shoudl always be in the list
+            if (clotheItem.count == 7) {//we have a range of temperatures
+                minimumTemperature = [[clotheItem objectAtIndex:MINIMUM_TEMPERATURE_INDEX_CLOTHES_ARRAY] intValue];
+                maximumTemperature = [[clotheItem objectAtIndex:MAXIMUM_TEMPERATURE_INDEX_CLOTHES_ARRAY] intValue];
+            }
+            int maximumNumber = [[clotheItem objectAtIndex:MAXIMUM_NUMBER_INDEX__CLOTHES_ARRAY] intValue];
+            NSArray *weatherStates = [clotheItem objectAtIndex:WEATHER_TYPE_INDEX_CLOTHES_ARRAY];
+            BOOL formal = [[clotheItem objectAtIndex:FORMAL_BOOL_INDEX_CLOTHES_ARRAY] boolValue];
             
-        } else  if ([[NSUserDefaults standardUserDefaults] integerForKey:@"unit"] == 2) {
-            temp = temp- 273.15;
-        }
-        
-        if (temp >= -10 && temp < 0) {
-            if ([weather isEqualToString:@"Clear"] || [weather isEqualToString:@"Sunny"] || [weather isEqualToString:@"Clouds"]) {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"casual"]) {
-                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        leisureShoes ++;
-                        boots ++;
-                        belt ++;
-                        if ([weather isEqualToString:@"Sunny"]) {
-                            sunglasses ++;
-                        }
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        
-                    } else {
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        leisureShoes ++;
-                        boots ++;
-                        if ([weather isEqualToString:@"Sunny"]) {
-                            sunglasses ++;
-                        }
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        jewelry ++;
-
-                    }
-                } else {
-                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        dressShoes ++;
-                        boots ++;
-                        belt ++;
-                        if ([weather isEqualToString:@"Sunny"]) {
-                            sunglasses ++;
-                        }
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        ties ++;
-                        dressShirts ++;
-                        slacks ++;
-                        blazers ++;
-                        suits ++;
-                        pants ++;
-                        
-                    } else {
-
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        dressShoes ++;
-                        boots ++;
-                        if ([weather isEqualToString:@"Sunny"]) {
-                            sunglasses ++;
-                        }
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        jewelry ++;
-                        dressShirts ++;
-                        pants ++;
-                        skirts ++;
-                        suits ++;
-                    }
-                }
-            } else if ([weather isEqualToString:@"Snow"] || [weather isEqualToString:@"Rain"]) {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"casual"]) {
-                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        leisureShoes ++;
-                        boots ++;
-                        belt ++;
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        raincoats ++;
-                        umbrella ++;
-                        
-                    } else {
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        leisureShoes ++;
-                        boots ++;
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        jewelry ++;
-                        raincoats ++;
-                        umbrella ++;
-                    }
-                } else {
-                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        dressShoes ++;
-                        boots ++;
-                        belt ++;
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        ties ++;
-                        dressShirts ++;
-                        slacks ++;
-                        blazers ++;
-                        suits ++;
-                        raincoats ++;
-                        umbrella ++;
-                        pants ++;
-                        
-                    } else {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        dressShoes ++;
-                        boots ++;
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        jewelry ++;
-                        dressShirts ++;
-                        pants ++;
-                        skirts ++;
-                        suits ++;
-                        raincoats ++;
-                        umbrella ++;
-                    }
-                
-                }
-            } else {
-                
-                [[[UIAlertView alloc] initWithTitle:@"Could not calculate what to pack" message:@"Oops seems like the weather condition is too extreme for us to handle sorry! " delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
+            
+            //get the current weather
+            NSDictionary *forecastData = [forecast objectAtIndex:i];
+            NSString *weather = forecastData[@"weather"][0][@"main"];
+            int temperetaure = [forecastData[@"temp"][@"day"] intValue];
+            
+            //get variables to use in if statement
+            //gender
+            //check if we need gender first of all
+            int genderInt;
+            if ([gender isEqualToString:@"both"]) {
+                genderInt = 3;
+            } else if ([gender isEqualToString:@"men"]) {
+                genderInt = 2;
+            } else if ([gender isEqualToString:@"women"]) {
+                genderInt = 1;
             }
-        } else if (temp >= 0 && temp < 10) {
-            if ([weather isEqualToString:@"Clear"] || [weather isEqualToString:@"Sunny"] || [weather isEqualToString:@"Clouds"]) {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"casual"]) {
-                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        leisureShoes ++;
-                        boots ++;
-                        belt ++;
-                        if ([weather isEqualToString:@"Sunny"]) {
-                            sunglasses ++;
-                        }
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        
-                    } else {
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        leisureShoes ++;
-                        boots ++;
-                        if ([weather isEqualToString:@"Sunny"]) {
-                            sunglasses ++;
-                        }
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        jewelry ++;
-                        
-                    }
-                } else {
-                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        dressShoes ++;
-                        boots ++;
-                        belt ++;
-                        if ([weather isEqualToString:@"Sunny"]) {
-                            sunglasses ++;
-                        }
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        ties ++;
-                        dressShirts ++;
-                        slacks ++;
-                        blazers ++;
-                        suits ++;
-                        pants ++;
-                        
-                    } else {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        dressShoes ++;
-                        boots ++;
-                        if ([weather isEqualToString:@"Sunny"]) {
-                            sunglasses ++;
-                        }
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        jewelry ++;
-                        dressShirts ++;
-                        pants ++;
-                        skirts ++;
-                        suits ++;
-                    }
-                }
-            } else if ([weather isEqualToString:@"Snow"] || [weather isEqualToString:@"Rain"]) {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"casual"]) {
-                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        leisureShoes ++;
-                        boots ++;
-                        belt ++;
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        raincoats ++;
-                        umbrella ++;
-                        
-                    } else {
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        leisureShoes ++;
-                        boots ++;
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        jewelry ++;
-                        raincoats ++;
-                        umbrella ++;
-                    }
-                } else {
-                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        dressShoes ++;
-                        boots ++;
-                        belt ++;
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        ties ++;
-                        dressShirts ++;
-                        slacks ++;
-                        blazers ++;
-                        suits ++;
-                        raincoats ++;
-                        umbrella ++;
-                        pants ++;
-                        
-                    } else {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        dressShoes ++;
-                        boots ++;
-                        topThermal ++;
-                        bottomThermal ++;
-                        wristwatch ++;
-                        jewelry ++;
-                        dressShirts ++;
-                        pants ++;
-                        skirts ++;
-                        suits ++;
-                        raincoats ++;
-                        umbrella ++;
-                    }
-                
-                }
+            
+            //get the user gender
+            int userGenderInt;
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
+                userGenderInt = 1;
             } else {
-                
-                [[[UIAlertView alloc] initWithTitle:@"Could not calculate what to pack" message:@"Oops seems like the weather condition is too extreme for us to handle sorry! " delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
+                userGenderInt = 2;
             }
-        }  else if (temp >= 10 && temp < 16) {
-            if ([weather isEqualToString:@"Clear"] || [weather isEqualToString:@"Sunny"] || [weather isEqualToString:@"Clouds"]) {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"casual"]) {
-                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweatshirts ++;
-                        jeans ++;
-                        leisureShoes ++;
-                        boots ++;
-                        belt ++;
-                        if ([weather isEqualToString:@"Sunny"]) {
-                            sunglasses ++;
-                        }
-                        wristwatch ++;
-                        
-                    } else {
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweatshirts ++;
-                        jeans ++;
-                        leisureShoes ++;
-                        boots ++;
-                        if ([weather isEqualToString:@"Sunny"]) {
-                            sunglasses ++;
-                        }
-                        wristwatch ++;
-                        jewelry ++;
-                        
-                    }
-                } else {
-                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        dressShoes ++;
-                        boots ++;
-                        belt ++;
-                        if ([weather isEqualToString:@"Sunny"]) {
-                            sunglasses ++;
-                        }
-                        wristwatch ++;
-                        ties ++;
-                        dressShirts ++;
-                        slacks ++;
-                        blazers ++;
-                        suits ++;
-                        pants ++;
-                        
-                    } else {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        dressShoes ++;
-                        boots ++;
-                        if ([weather isEqualToString:@"Sunny"]) {
-                            sunglasses ++;
-                        }
-                        wristwatch ++;
-                        jewelry ++;
-                        dressShirts ++;
-                        pants ++;
-                        skirts ++;
-                        suits ++;
-                    }
+            
+            //formal or leisure
+            BOOL leisure = [[NSUserDefaults standardUserDefaults] boolForKey:@"casual"];
+            
+            //mx number
+            NSInteger previousNumber = [[NSUserDefaults standardUserDefaults] integerForKey:name];
+            
+            for (NSString *weatherState in weatherStates) {//for each weather states avaible
+                if ([weather isEqualToString:weatherState] && temperetaure >= minimumTemperature && temperetaure <= maximumTemperature && (userGenderInt == genderInt || genderInt == 3) && leisure != formal && previousNumber < maximumNumber) {//check all properties
+                    [[NSUserDefaults standardUserDefaults] setInteger:previousNumber+1 forKey:name];//increment previous number by one and save it
+                    //add the key to the clothes to pack
+                    [namesOfClothesToPack addObject:name];
                 }
-            } else if ([weather isEqualToString:@"Snow"] || [weather isEqualToString:@"Rain"]) {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"casual"]) {
-                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        leisureShoes ++;
-                        boots ++;
-                        belt ++;
-                        wristwatch ++;
-                        raincoats ++;
-                        umbrella ++;
-                        
-                    } else {
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        leisureShoes ++;
-                        boots ++;
-                        wristwatch ++;
-                        jewelry ++;
-                        raincoats ++;
-                        umbrella ++;
-                    }
-                } else {
-                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"female"]) {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        dressShoes ++;
-                        boots ++;
-                        belt ++;
-                        wristwatch ++;
-                        ties ++;
-                        dressShirts ++;
-                        slacks ++;
-                        blazers ++;
-                        suits ++;
-                        raincoats ++;
-                        umbrella ++;
-                        pants ++;
-                        
-                    } else {
-                        
-                        coats ++;
-                        hats++;
-                        gloves ++;
-                        scarves++;
-                        t_shirt ++;
-                        sweaters ++;
-                        jeans ++;
-                        dressShoes ++;
-                        boots ++;
-                        wristwatch ++;
-                        jewelry ++;
-                        dressShirts ++;
-                        pants ++;
-                        skirts ++;
-                        suits ++;
-                        raincoats ++;
-                        umbrella ++;
-                    }
-                
-                }
-            } else {
-                
-                [[[UIAlertView alloc] initWithTitle:@"Could not calculate what to pack" message:@"Oops seems like the weather condition is too extreme for us to handle sorry! " delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
             }
         }
     }
     
-    if (temp < -10 || temp > 40) {
-        [[[UIAlertView alloc] initWithTitle:@"Could not calculate what to pack" message:@"Oops seems like the temperature is too extreme for us to handle sorry! " delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil]show];
-    } else {
-       //round all variables to their maxvalue
-        if (underwear > 7) {
-            underwear = 7;
-        }
-        if (socks > 7) {
-            socks = 7;
-        }
-        if (undershirt > 7) {
-            undershirt = 7;
-        }
-        if (bras > 7) {
-            bras = 7;
-        }
-        if (sleepwear > 7) {
-            sleepwear = 7;
-        }
-        if (tights > 7) {
-            tights = 7;
-        }
-        if (underwear > 7) {
-            underwear = 7;
-        }
-        if (dressShirts > 3) {
-            dressShirts = 3;
-        }
-        if (sweaters > 3) {
-            sweaters = 3;
-        }
-        if (blazers > 3) {
-            blazers = 3;
-        }
-        if (slacks > 3) {
-            slacks = 3;
-        }
-        if (pants > 3) {
-            pants = 3;
-        }
-        if (skirts > 3) {
-            skirts = 3;
-        }
-        if (dresses > 3) {
-            dresses = 3;
-        }
-        if (suits > 3) {
-            suits = 3;
-        }
-        if (tuxedo > 3) {
-            tuxedo = 3;
-        }
-        if (ties > 3) {
-            ties = 3;
-        }
-        if (jackets > 2) {
-            jackets = 2;
-        }
-        if (coats > 2) {
-            coats = 2;
-        }
-        if (raincoats > 2) {
-            raincoats = 2;
-        }
-        if (hats > 2) {
-            hats = 2;
-        }
-        if (gloves > 2) {
-            gloves = 2;
-        }
-        if (scarves > 2) {
-            scarves = 2;
-        }
-        if (t_shirt > 5) {
-            t_shirt = 5;
-        }
-        if (tankTops > 5) {
-            tankTops = 5;
-        }
-        if (sweatshirts > 5) {
-            sweatshirts = 5;
-        }
-        if (jeans > 5) {
-            jeans = 5;
-        }
-        if (shorts > 5) {
-            shorts = 5;
-        }
-        if (exercise_clothing > 5) {
-            exercise_clothing = 5;
-        }
-        if (swimsuit > 5) {
-            swimsuit = 5;
-        }
-        if (athleticShoes > 2) {
-            athleticShoes = 2;
-        }
-        if (leisureShoes > 2) {
-            leisureShoes = 2;
-        }
-        if (dressShoes > 2) {
-            dressShoes = 2;
-        }
-        if (sandals__flip_flops > 2) {
-            sandals__flip_flops = 2;
-        }
-        if (boots > 2) {
-            boots = 2;
-        }
-        if (belt > 2) {
-            belt = 2;
-        }
-        if (wristwatch > 2) {
-            wristwatch = 2;
-        }
-        if (jewelry > 2) {
-            jewelry = 2;
-        }
-        if (glasses > 2) {
-            glasses = 2;
-        }
-        if (sunglasses > 2) {
-            sunglasses = 2;
-        }
-        if (reading_glasses > 2) {
-            reading_glasses = 2;
-        }
-        glasses_cases = reading_glasses + sunglasses + glasses;
-        
-        if (umbrella > 2) {
-            umbrella = 2;
-        }
-        if (topThermal > 2) {
-            topThermal = 2;
-        }
-        if (bottomThermal > 2) {
-            bottomThermal = 2;
-        }
-        
-        AudioServicesPlaySystemSound (systemSoundID);
+    //save the set
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:[NSSet setWithSet:namesOfClothesToPack]];
+    [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"namesOfClothesToPack"];
+    
+    
+    //sync defaults
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    //we are done
+    dispatch_async(dispatch_get_main_queue(), ^{//on the main thread update the UI and notify the user
+        AudioServicesPlaySystemSound(1057);
         whatToPackBTN.hidden = NO;
-    }
-    
-    
+        [UIView animateWithDuration:0.3 animations:^{whatToPackBTN.alpha = 1.0;}];
+    });
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+#pragma mark Retrieving Data
+-(NSArray *)getClothingData {
+    //declare the json dict
+    __block NSArray *clothingItems = nil;
+    
+    //get json data
+    //get the url
+    NSURL *url = [[NSURL alloc] initWithString:@"http://appdata.ge0rges.com/WhatToPack%3F/ClothingItems.plist"];
+    
+    //variables to store reposne and error
+    NSURLResponse *response;
+    NSString *errorDescription;
+    NSError *error;
+    
+    //send the request
+    NSData *data = [NSURLConnection sendSynchronousRequest:[[NSURLRequest alloc] initWithURL:url] returningResponse:&response error:&error];
+    
+    if (error || !response) {//if we got an error or the response is empty
+        //show a alert view
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"It seems the current data isn't valid. Please verify your internet connection and try again." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        [alertView show];
+        
+        return nil;
+        
+    } else if (response) {//otherwise if we got a response
+        clothingItems = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:0 format:0 errorDescription:&errorDescription];
+       
+        if (errorDescription || !clothingItems || clothingItems.count == 0) {//if we got an error parsing or list is empty
+            //show a alert view
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Not able to fetch latest data. Please verify your internet connection and try again." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            [alertView show];
+            
+            return nil;
+        
+        } else {//otherwise everything is fine
+            
+            return clothingItems;
+        }
+    } else {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Not able to fetch latest data. Please verify your internet connection and try again." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        [alertView show];
+    }
+    
+    return nil;
 }
 
 @end

@@ -1,0 +1,24 @@
+//
+//  Prefix header
+//
+//  The contents of this file are implicitly included at the beginning of every source file.
+//
+
+#import <Availability.h>
+
+#ifndef __IPHONE_5_0
+#warning "This project uses features only available in iOS SDK 5.0 and later."
+#endif
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+#endif
+
+#define NAME_STRING_INDEX_CLOTHES_ARRAY 0
+#define MINIMUM_TEMPERATURE_INDEX_CLOTHES_ARRAY 1
+#define MAXIMUM_NUMBER_INDEX__CLOTHES_ARRAY 2
+#define GENDER_STRING_INDEX_CLOTHES_ARRAY 3
+#define FORMAL_BOOL_INDEX_CLOTHES_ARRAY 4
+#define WEATHER_TYPE_INDEX_CLOTHES_ARRAY 5
+#define MAXIMUM_TEMPERATURE_INDEX_CLOTHES_ARRAY 6 //always has to be last

@@ -1,2 +1,2 @@
-platform :ios, '6.0'
-pod 'OpenWeatherMapAPI', '~> 0.0.5'
+platform :ios, '7.0'
+pod 'OpenWeatherMapAPI'
