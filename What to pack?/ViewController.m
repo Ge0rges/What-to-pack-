@@ -27,9 +27,9 @@ extern NSInteger forecastCount;
     
     //update status bar
     [self setNeedsStatusBarAppearanceUpdate];
-    
+  
     // Setup weather api
-    weatherAPI = [[OWeatherMapAPI alloc] initWithAPIKey:@"49dfbf0711418f5cd182e3b0cc4641ee"];
+    weatherAPI = [[OWMWeatherAPI alloc] initWithAPIKey:@"49dfbf0711418f5cd182e3b0cc4641ee"];
     
     // We want localized strings according to the prefered system language
     [weatherAPI setLangWithPreferedLanguage];
@@ -377,7 +377,7 @@ extern NSInteger forecastCount;
     
     //get json data
     //get the url
-    NSURL *url = [[NSURL alloc] initWithString:@"http://appdata.ge0rges.com/WhatToPack%3F/ClothingItems.plist"];
+    NSURL *url = [[NSURL alloc] initWithString:@"https://appdata.ge0rges.com/WhatToPack%3F/ClothingItems.plist"];
     
     //variables to store reposne and error
     NSURLResponse *response;

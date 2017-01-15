@@ -173,7 +173,7 @@
 		DA5E0FD0180D795200302B3C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "Georges Kanaan";
 				TargetAttributes = {
 					DA5E0FD7180D795200302B3C = {
@@ -299,6 +299,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: ilyas Kanaan (H457J2HWER)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: ilyas Kanaan (H457J2HWER)";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -366,20 +367,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: ilyas Kanaan (H457J2HWER)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: ilyas Kanaan (H457J2HWER)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/Georges/Desktop,
-					"/Users/Georges/Desktop/Development/iOS_Development/Apps/What\\ to\\ pack?",
+					"/Users/GeorgesKanaan/Documents/Development/iOS_Development/Apps/What\\ to\\ pack?",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "What to pack?/What to Pack?.temp_caseinsensitive_rename-Prefix.pch";
 				INFOPLIST_FILE = "What to pack?/What to Pack?.temp_caseinsensitive_rename-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ge0rges.What-to-pack";
 				PRODUCT_NAME = "What to Pack";
-				PROVISIONING_PROFILE = "3210cfd2-8910-4b81-aa25-0d790e504d2b";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -391,20 +392,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Ilyas Kanaan (7DTJP5N92F)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Ilyas Kanaan (7DTJP5N92F)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/Georges/Desktop,
-					"/Users/Georges/Desktop/Development/iOS_Development/Apps/What\\ to\\ pack?",
+					"/Users/GeorgesKanaan/Documents/Development/iOS_Development/Apps/What\\ to\\ pack?",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "What to pack?/What to Pack?.temp_caseinsensitive_rename-Prefix.pch";
 				INFOPLIST_FILE = "What to pack?/What to Pack?.temp_caseinsensitive_rename-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ge0rges.What-to-pack";
 				PRODUCT_NAME = "What to Pack";
-				PROVISIONING_PROFILE = "6ed346fc-d6a2-4865-a555-bc74d9af7ed7";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
