@@ -404,7 +404,6 @@ extern NSInteger forecastCount;
     
     //variables to store reposne and error
     NSURLResponse *response;
-    NSString *errorDescription;
     NSError *error;
     
     //send the request
@@ -418,9 +417,9 @@ extern NSInteger forecastCount;
         return nil;
         
     } else if (response) {//otherwise if we got a response
-        clothingItems = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:0 format:0 errorDescription:&errorDescription];
+        clothingItems = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:nil error:&error];
        
-        if (errorDescription || !clothingItems || clothingItems.count == 0) {//if we got an error parsing or list is empty
+        if (error || !clothingItems || clothingItems.count == 0) {//if we got an error parsing or list is empty
             //show a alert view
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Not able to fetch latest data. Please verify your internet connection and try again." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
             [alertView show];
