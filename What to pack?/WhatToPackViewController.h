@@ -7,13 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ViewController.h"
-#import "MTAnimatedLabel.h"
 
-@interface WhatToPackViewController : UITableViewController {
-    NSMutableArray *clothes;
-}
-
-@property (strong, nonatomic) IBOutlet UITableView *mainTableView;
+@interface WhatToPackViewController : UITableViewController
 
 @end

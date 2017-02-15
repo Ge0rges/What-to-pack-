@@ -8,9 +8,41 @@
 
 #import "ViewController.h"
 
+// Frameworks
+#import <AudioToolbox/AudioToolbox.h>
+
+// Controllers
+#import "WhatToPackViewController.h"
+
+// Classes
+#import "OWMWeatherAPI.h"
+
 extern NSInteger forecastCount;
 
-@interface ViewController ()
+@interface ViewController () <UITextFieldDelegate, UITableViewDataSource> {
+  NSArray *clothes;
+  
+  OWMWeatherAPI *weatherAPI;
+  
+  NSMutableArray *forecast;
+  
+  NSDateFormatter *dateFormatter;
+}
+
+@property (strong, nonatomic) IBOutlet UIButton *goButton;
+@property (strong, nonatomic) IBOutlet UIButton *whatToPackBTN;
+
+@property (weak, nonatomic) IBOutlet UITableView *forecastTableView;
+
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+
+@property (strong, nonatomic) IBOutlet UITextField *timeTF;
+@property (strong, nonatomic) IBOutlet UITextField *destinationTF;
+
+@property (strong, nonatomic) IBOutlet UISegmentedControl *unitSC;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *typeSC;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *sexeSC;
+
 
 @end
 
@@ -20,8 +52,7 @@ extern NSInteger forecastCount;
 
 #pragma mark - View Lifecycle
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
@@ -36,7 +67,7 @@ extern NSInteger forecastCount;
     
 }
 
--(void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     //get clothes data
@@ -96,13 +127,7 @@ extern NSInteger forecastCount;
     }
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
--(UIStatusBarStyle)preferredStatusBarStyle {
+- (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleDefault;
 }
 
@@ -183,8 +208,7 @@ extern NSInteger forecastCount;
     
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField == destinationTF) {
         
         if (timeTF.text.length > 0) {
@@ -198,7 +222,7 @@ extern NSInteger forecastCount;
     return YES;
 }
 
-- (void)checkHideGoButton{
+- (void)checkHideGoButton {
     
     //check if we should hide the go button depending on text entered
     if (activityIndicator.isAnimating == YES || activityIndicator.hidden == NO) {
@@ -216,7 +240,6 @@ extern NSInteger forecastCount;
 
 #pragma mark - weather
 - (void)getWeatherWithDestination:(NSString *)destination andTime:(int)time {
-    
     if (time > 16) {//make sure it is possible to get a  forecast for those days
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Forecast" message:@"We are only able to get the weather forecast for 14 days excluding today. We are generating a packing list for 14 days." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
         
@@ -371,7 +394,7 @@ extern NSInteger forecastCount;
 }
 
 #pragma mark Retrieving Data
--(NSArray *)getClothingData {
+- (NSArray *)getClothingData {
     //declare the json dict
     __block NSArray *clothingItems = nil;
     
