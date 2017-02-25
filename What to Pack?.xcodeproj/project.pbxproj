@@ -19,8 +19,9 @@
 		DA5E0FF7180D795200302B3C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA5E0FF6180D795200302B3C /* Images.xcassets */; };
 		DA801C811A7169CE007894B3 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA801C801A7169CE007894B3 /* QuartzCore.framework */; };
 		DA86EAD418AAADDB00DEDC8B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA86EAD318AAADDB00DEDC8B /* AudioToolbox.framework */; };
-		DAE82EB6195AE84A0004EE7D /* MTAnimatedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = DAE82EB5195AE84A0004EE7D /* MTAnimatedLabel.m */; };
 		DAF8E88E18A91CA500B584C8 /* WhatToPackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAF8E88D18A91CA500B584C8 /* WhatToPackViewController.m */; };
+		FB1CB92B1E618BD50006AE0B /* CitySelectionTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FB1CB92A1E618BD50006AE0B /* CitySelectionTableViewController.m */; };
+		FBC1FF1E1E61B7B7008E8088 /* cityList.json in Resources */ = {isa = PBXBuildFile; fileRef = FBC1FF1D1E61B7B7008E8088 /* cityList.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,12 +43,13 @@
 		DA5E0FFD180D795200302B3C /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		DA801C801A7169CE007894B3 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DA86EAD318AAADDB00DEDC8B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		DAE82EB4195AE84A0004EE7D /* MTAnimatedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTAnimatedLabel.h; sourceTree = "<group>"; };
-		DAE82EB5195AE84A0004EE7D /* MTAnimatedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTAnimatedLabel.m; sourceTree = "<group>"; };
 		DAF8E88C18A91CA500B584C8 /* WhatToPackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WhatToPackViewController.h; sourceTree = "<group>"; };
 		DAF8E88D18A91CA500B584C8 /* WhatToPackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WhatToPackViewController.m; sourceTree = "<group>"; };
 		DB5CA4302D9DE61008DA2CB2 /* Pods-What to Pack?.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-What to Pack?.release.xcconfig"; path = "Pods/Target Support Files/Pods-What to Pack?/Pods-What to Pack?.release.xcconfig"; sourceTree = "<group>"; };
 		F4828915BA3361BE2B8FD2D2 /* libPods-What to Pack?.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-What to Pack?.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB1CB9291E618BD50006AE0B /* CitySelectionTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CitySelectionTableViewController.h; sourceTree = "<group>"; };
+		FB1CB92A1E618BD50006AE0B /* CitySelectionTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CitySelectionTableViewController.m; sourceTree = "<group>"; };
+		FBC1FF1D1E61B7B7008E8088 /* cityList.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = cityList.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,22 +123,13 @@
 		DA5E0FE2180D795200302B3C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				DAE82EB7195AE84F0004EE7D /* MTAnimatedLabel */,
+				FBC1FF1D1E61B7B7008E8088 /* cityList.json */,
 				DA5E0FE3180D795200302B3C /* What to Pack?.temp_caseinsensitive_rename-Info.plist */,
 				DA5E0FE4180D795200302B3C /* InfoPlist.strings */,
 				DA5E0FE7180D795200302B3C /* main.m */,
 				DA5E0FE9180D795200302B3C /* What to Pack?.temp_caseinsensitive_rename-Prefix.pch */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		DAE82EB7195AE84F0004EE7D /* MTAnimatedLabel */ = {
-			isa = PBXGroup;
-			children = (
-				DAE82EB4195AE84A0004EE7D /* MTAnimatedLabel.h */,
-				DAE82EB5195AE84A0004EE7D /* MTAnimatedLabel.m */,
-			);
-			name = MTAnimatedLabel;
 			sourceTree = "<group>";
 		};
 		FBCBA1991E54EAF000079A49 /* Assets */ = {
@@ -153,6 +146,8 @@
 			children = (
 				DA5E0FF3180D795200302B3C /* ViewController.h */,
 				DA5E0FF4180D795200302B3C /* ViewController.m */,
+				FB1CB9291E618BD50006AE0B /* CitySelectionTableViewController.h */,
+				FB1CB92A1E618BD50006AE0B /* CitySelectionTableViewController.m */,
 				DAF8E88C18A91CA500B584C8 /* WhatToPackViewController.h */,
 				DAF8E88D18A91CA500B584C8 /* WhatToPackViewController.m */,
 			);
@@ -231,6 +226,7 @@
 			files = (
 				DA5E0FF7180D795200302B3C /* Images.xcassets in Resources */,
 				DA5E0FEF180D795200302B3C /* Main.storyboard in Resources */,
+				FBC1FF1E1E61B7B7008E8088 /* cityList.json in Resources */,
 				DA5E0FE6180D795200302B3C /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -293,8 +289,8 @@
 				DA5E0FF5180D795200302B3C /* ViewController.m in Sources */,
 				DA5E0FEC180D795200302B3C /* AppDelegate.m in Sources */,
 				DAF8E88E18A91CA500B584C8 /* WhatToPackViewController.m in Sources */,
+				FB1CB92B1E618BD50006AE0B /* CitySelectionTableViewController.m in Sources */,
 				DA5E0FE8180D795200302B3C /* main.m in Sources */,
-				DAE82EB6195AE84A0004EE7D /* MTAnimatedLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

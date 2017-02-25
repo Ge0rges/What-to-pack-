@@ -11,10 +11,7 @@
 // Controllers
 #import "ViewController.h"
 
-// Classes
-#import "MTAnimatedLabel.h"
-
-NSInteger forecastCount;
+NSInteger forecastCount;// Extern from ViewController.h
 
 @interface WhatToPackViewController () {
   NSMutableArray *clothes;
@@ -31,20 +28,15 @@ NSInteger forecastCount;
   [super viewDidLoad];
   // Do any additional setup after loading the view.
   
-  //init clothes
   clothes = [NSMutableArray new];
   
-  //update status bar
+  // Update status bar
   [self setNeedsStatusBarAppearanceUpdate];
   
-  //configure the tableview
-  //auto layout
-  self.mainTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-  
-  //make the footer label in the tableView have a smaller font
+  // Make the footer label in the tableView have a smaller font
   [[UILabel appearanceWhenContainedIn:[UITableViewHeaderFooterView class], nil] setFont:[UIFont boldSystemFontOfSize:14]];
   
-  //populate cloth to pack array
+  // Populate cloth to pack array
   NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"namesOfClothesToPack"];
   NSSet *namesOfClothesToPack = [NSKeyedUnarchiver unarchiveObjectWithData:data];
   
@@ -55,21 +47,17 @@ NSInteger forecastCount;
     [clothes addObject:clothe];
   }
   
-  //reloadData
+  // Reload table data
   [self.mainTableView reloadData];
-}
-
-- (void)viewWillLayoutSubviews {
-  [super viewWillLayoutSubviews];
   
-  //animate the 2 instruction labels
-  MTAnimatedLabel *label = (MTAnimatedLabel *)[self.view viewWithTag:2];
-  UIColor *defaultTintColor = [[self view] tintColor];//default tint color
-  label.gradientColor = defaultTintColor;
-  label.animationDirection = AnimationDirectionRightToLeft;
-  [label startAnimating];
+  // Show navigation bar
+  [self.navigationController setNavigationBarHidden:NO animated:YES];
+
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 - (BOOL)prefersStatusBarHidden {
   return YES;
@@ -109,12 +97,6 @@ NSInteger forecastCount;
   [cell.detailTextLabel setText:[NSString stringWithFormat:@"%i", [[clotheItem objectAtIndex:1] intValue]]];
   
   return cell;
-}
-
-#pragma mark - Actions
-- (IBAction)showMain:(id)sender {
-  [[NSUserDefaults standardUserDefaults] synchronize];
-  [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

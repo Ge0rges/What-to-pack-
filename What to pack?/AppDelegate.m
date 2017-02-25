@@ -15,9 +15,8 @@
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
       
-    //set default values
-    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"launchBool"]) {
-        
+    // Set default values
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"launchBool"]) {
         [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"unit"];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"casual"];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"female"];
